@@ -1,6 +1,6 @@
 package com.lxj.sendmail
 
-import android.Manifest
+import android.Manifest.permission.*
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -21,8 +21,8 @@ class MainActivity : AppCompatActivity() {
     companion object {
         //读写权限
         private val PERMISSIONS_STORAGE = arrayOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            READ_EXTERNAL_STORAGE,
+            WRITE_EXTERNAL_STORAGE
         )
         //请求状态码
         private const val REQUEST_PERMISSION_CODE = 1
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             if (ActivityCompat.checkSelfPermission(
                     this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    WRITE_EXTERNAL_STORAGE
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions(
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun isSdCardExist(): Boolean {
+    private fun isSdCardExist(): Boolean {
         return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
     }
 
@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
      *
      * @return
      */
-    fun getSdCardPath(): String {
+    private fun getSdCardPath(): String {
         return if (isSdCardExist()) {
             Environment.getExternalStorageDirectory().absolutePath // /storage/emulated/0
         } else {

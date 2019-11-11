@@ -59,7 +59,7 @@ class FileActivity : AppCompatActivity(), ListAdapter.ListAdapterListener {
     }
 
 
-    fun getSdCardFile(): List<FileModel> {
+    private fun getSdCardFile(): List<FileModel> {
         val list = mutableListOf<FileModel>()
         File(intent.getStringExtra(FILE_PATH)).listFiles().forEach {
             list.add(FileModel(it.isDirectory, it.name))

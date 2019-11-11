@@ -10,15 +10,11 @@ import android.app.Application
 class MyApplication : Application() {
 
     companion object {
-        private var mFileName: String = "暂无"
+        private var mFileName: String = "/storage/emulated/0/Netease/严选旺铺收银/log/app.log"
         fun setFileName(fileName: String) {
             mFileName = fileName
         }
 
         fun getFileName() = mFileName
-    }
-
-    override fun onCreate() {
-        super.onCreate()
     }
 }
