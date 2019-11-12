@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.async
 import org.jetbrains.anko.onUiThread
 import org.jetbrains.anko.toast
+import java.io.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -123,5 +124,46 @@ class MainActivity : AppCompatActivity() {
         )
         val sms = SimpleMailSender()
         return sms.sendTextMail(mailInfo)
+    }
+
+    /**
+     * 读取SD卡文件里面的内容
+     */
+    fun readFile() {
+        val file = File("/mnt/sdcard/Netease/严选旺铺收银/log/app.log")
+
+        // 1.0 start
+        val fr = FileReader("/mnt/sdcard/Netease/严选旺铺收银/log/app.log")
+        val r = BufferedReader(fr)
+        while (r.readLine() != null) {
+            Log.i("LXJ", "1.0-SD卡文件里面的内容:${r.readLine()}")
+        }
+        // end
+
+        // 2.0 start
+        try {
+            val iss = FileInputStream(file)
+            val input = InputStreamReader(iss, "UTF-8")
+            val reader = BufferedReader(input)
+            while (reader.readLine() != null) {
+                Log.i("LXJ", "2.0-SD卡文件里面的内容:${reader.readLine()}")
+            }
+
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        }
+        // end
+
+        // 3.0 start
+        try {
+            FileReader(file).use { reader ->
+                reader.readLines().forEach {
+                    Log.i("LXJ", "3.0-SD卡文件里面的内容:$it")
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        // end
     }
 }
