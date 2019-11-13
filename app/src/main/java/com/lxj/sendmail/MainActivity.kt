@@ -1,11 +1,14 @@
 package com.lxj.sendmail
 
-import android.Manifest.permission.*
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.app.Dialog
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.lixianjin.imageanimation.MailSenderInfo
@@ -15,7 +18,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.async
 import org.jetbrains.anko.onUiThread
 import org.jetbrains.anko.toast
-import java.io.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,25 +51,31 @@ class MainActivity : AppCompatActivity() {
         }
 
         // 选择文件
-        btn_select_file.setOnClickListener {
+        btn_choose_other_log.setOnClickListener {
             FileActivity.openFileActivity(this, getSdCardPath())
         }
 
         // 发送点击
-        btn_send_mail.setOnClickListener {
+        btn_send_log.setOnClickListener {
             async {
-                if (sendMail()) {
+                if (sendMail(false)) {
+                    onUiThread {
+                        toast("发送成功！")
+                        showSendSuccessDialog()
+                    }
+                }
+            }
+        }
+
+        btn_send_log_with_pos.setOnClickListener {
+            async {
+                if (sendMail(true)) {
                     onUiThread {
                         toast("发送成功！")
                     }
                 }
             }
         }
-    }
-
-    override fun onResume() {
-        tv_file_path.text = MyApplication.getFileName()
-        super.onResume()
     }
 
     /**
@@ -107,7 +115,9 @@ class MainActivity : AppCompatActivity() {
     /**
      * 发送邮件
      */
-    private fun sendMail(): Boolean {
+    private fun sendMail(isSendPos: Boolean): Boolean {
+        val list = if (isSendPos) arrayOf(MyApplication.getFileName()) else arrayOf(MyApplication.getFileName(), MyApplication.mPosCrash)
+
         val mailInfo = MailSenderInfo(
             mailServerHost = "smtp.126.com",
             mailServerPort = "25",  // 465(不可以) 587 25
@@ -120,50 +130,23 @@ class MainActivity : AppCompatActivity() {
             validate = true,
             subject = "人工收银日志",
             content = "人工收银最新log日志和crash日志",
-            attachFilePath = arrayOf(MyApplication.getFileName())
+            attachFilePath = list
         )
         val sms = SimpleMailSender()
         return sms.sendTextMail(mailInfo)
     }
 
-    /**
-     * 读取SD卡文件里面的内容
-     */
-    fun readFile() {
-        val file = File("/mnt/sdcard/Netease/严选旺铺收银/log/app.log")
+    private fun showSendSuccessDialog(){
+        val dialog = Dialog(this, R.style.CustomDialog)
+        dialog.setContentView(LayoutInflater.from(this).inflate(R.layout.layout_dialog, null, false))
+        dialog.show()
 
-        // 1.0 start
-        val fr = FileReader("/mnt/sdcard/Netease/严选旺铺收银/log/app.log")
-        val r = BufferedReader(fr)
-        while (r.readLine() != null) {
-            Log.i("LXJ", "1.0-SD卡文件里面的内容:${r.readLine()}")
-        }
-        // end
-
-        // 2.0 start
-        try {
-            val iss = FileInputStream(file)
-            val input = InputStreamReader(iss, "UTF-8")
-            val reader = BufferedReader(input)
-            while (reader.readLine() != null) {
-                Log.i("LXJ", "2.0-SD卡文件里面的内容:${reader.readLine()}")
+        async {
+            Thread.sleep(3000)
+            onUiThread {
+                dialog.dismiss()
             }
-
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
         }
-        // end
 
-        // 3.0 start
-        try {
-            FileReader(file).use { reader ->
-                reader.readLines().forEach {
-                    Log.i("LXJ", "3.0-SD卡文件里面的内容:$it")
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        // end
     }
 }

@@ -3,4 +3,13 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+
+    <!-- background -->
+    <color name="send_log_bg">#E89D37</color>
+    <color name="send_pos_log_bg">#81B336</color>
+    <color name="send_main_bg">#AAAAAA</color>
+    <color name="send_layout_bg">#FFFFFF</color>
+
+    <!-- text_color -->
+    <color name="text_color_FFFFFF">#FFFFFF</color>
 </resources>

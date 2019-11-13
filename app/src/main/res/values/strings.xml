@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">sendMail</string>
+
+    <string name="send_log">发送日志</string>
+    <string name="send_log_hint">*如发生一般异常，请点击"发送日志"</string>
+    <string name="send_pos_log">发送POS机日志</string>
+    <string name="send_pos_log_hint">*如发生于POS机相关异常，请点击"发送POS机相关日志"</string>
+    <string name="choose_other_log">其他信息</string>
 </resources>
